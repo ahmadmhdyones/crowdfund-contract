@@ -1,5 +1,23 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.15.0;
+pragma solidity ^0.8.15 .0;
+
+contract CampaignFactory {
+    Campaign[] public deployedCampaigns;
+
+    function createCampaign(
+        uint256 _goal,
+        uint256 _end,
+        uint256 _minimum
+    ) public returns (address) {
+        Campaign newCampaign = new Campaign(_goal, _end, _minimum, msg.sender);
+        deployedCampaigns.push(newCampaign);
+        return address(newCampaign);
+    }
+
+    function getDeployedCampaign() external view returns (Campaign[] memory) {
+        return deployedCampaigns;
+    }
+}
 
 contract Campaign {
     struct Request {
@@ -69,10 +87,7 @@ contract Campaign {
         uint256 _minimum,
         address _owner
     ) {
-        require(
-            _end > block.timestamp,
-            "End time is less than current time"
-        );
+        require(_end > block.timestamp, "End time is less than current time");
 
         manager = _owner;
         goal = _goal;
@@ -119,20 +134,14 @@ contract Campaign {
         address payable user = payable(msg.sender);
         user.transfer(_amount);
 
-        pledged -= _amount;
-        pledgeOf[msg.sender] -= _amount;
-        if (pledgeOf[msg.sender] == 0) {
+        if (pledgeOf[msg.sender] == _amount) {
             countPledges--;
         }
+        pledged -= _amount;
+        pledgeOf[msg.sender] -= _amount;
     }
 
-    function refund()
-        external
-        payable
-        beforeed
-        contributed
-        notsucceeded
-    {
+    function refund() external payable beforeed contributed notsucceeded {
         uint256 bal = pledgeOf[msg.sender];
         address payable user = payable(msg.sender);
         user.transfer(bal);
@@ -171,7 +180,12 @@ contract Campaign {
         request.countApprovals++;
     }
 
-    function finalizeRequest(uint256 _id) external payable restricted activated {
+    function finalizeRequest(uint256 _id)
+        external
+        payable
+        restricted
+        activated
+    {
         Request storage request = requests[_id];
 
         require(!request.completed, "Request has been completed");
@@ -179,10 +193,6 @@ contract Campaign {
             request.countApprovals > (countPledges / 2),
             "Request does not have enough approvals"
         );
-        // require(
-        //     request.amount <= address(this).balance,
-        //     "Request amount is greater than campaign balance"
-        // );
 
         payable(request.recipient).transfer(request.amount);
         request.completed = true;
