@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.15 .0;
+pragma solidity ^0.8.15.0;
 
 contract CampaignFactory {
     Campaign[] public deployedCampaigns;
