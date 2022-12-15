@@ -102,6 +102,7 @@ contract Campaign {
         canceled = true;
     }
 
+    // TODO: remove finalize
     function finalize() external restricted activated succeeded {
         completed = true;
     }
@@ -117,28 +118,6 @@ contract Campaign {
             countPledges++;
         }
         pledgeOf[msg.sender] += msg.value;
-    }
-
-    function unPledge(uint256 _amount)
-        external
-        payable
-        beforeed
-        contributed
-        notsucceeded
-    {
-        require(
-            pledgeOf[msg.sender] >= _amount,
-            "You do not have enough balance pledged to withdraw"
-        );
-
-        address payable user = payable(msg.sender);
-        user.transfer(_amount);
-
-        if (pledgeOf[msg.sender] == _amount) {
-            countPledges--;
-        }
-        pledged -= _amount;
-        pledgeOf[msg.sender] -= _amount;
     }
 
     function refund() external payable beforeed contributed notsucceeded {
@@ -198,6 +177,10 @@ contract Campaign {
         request.completed = true;
     }
 
+    // TODO: add new function: isOwner()
+    // TODO: add new function: isContributor()
+    // TODO: add isApprovedByContributor
+
     function getSummary()
         external
         view
@@ -230,3 +213,19 @@ contract Campaign {
         return requests;
     }
 }
+
+// [ ] auth -- depends on thirdweb
+
+// [ ] add to my campaigns
+// [ ] add to my contributors
+// [ ] remove from my contributions
+
+// [ ] what is the benfits of using thirdweb instead of web3.js (deployment)
+// how to use ABIs in thirdweb ?
+
+// [ ] send doc for DR. Wassim @Thur morning
+    // UI/UX
+    // req. & abstract & ...
+
+
+// Doc headline for later
