@@ -38,7 +38,6 @@ contract Campaign {
     uint256 public countPledges; // number of contributors
     mapping(address => uint256) public pledgeOf; // contributors
     mapping(address => mapping(uint256 => bool)) public approvals; // requests voters
-    bool public completed; // it is done?
     bool public canceled; // it is paused?
 
     modifier restricted() {
@@ -76,7 +75,6 @@ contract Campaign {
     }
 
     modifier activated() {
-        require(!completed, "Campaign has finished");
         require(!canceled, "Campaign has canceled");
         _;
     }
@@ -95,16 +93,10 @@ contract Campaign {
         startAt = block.timestamp;
         endAt = _end;
         minPledge = _minimum;
-        completed = canceled = false;
     }
 
     function cancel() external restricted activated notsucceeded {
         canceled = true;
-    }
-
-    // TODO: remove finalize
-    function finalize() external restricted activated succeeded {
-        completed = true;
     }
 
     function pledge() external payable beforeed activated {
@@ -177,9 +169,6 @@ contract Campaign {
         request.completed = true;
     }
 
-    // TODO: add new function: isOwner()
-    // TODO: add new function: isContributor()
-    // TODO: add isApprovedByContributor
 
     function getSummary()
         external
@@ -213,19 +202,3 @@ contract Campaign {
         return requests;
     }
 }
-
-// [ ] auth -- depends on thirdweb
-
-// [ ] add to my campaigns
-// [ ] add to my contributors
-// [ ] remove from my contributions
-
-// [ ] what is the benfits of using thirdweb instead of web3.js (deployment)
-// how to use ABIs in thirdweb ?
-
-// [ ] send doc for DR. Wassim @Thur morning
-    // UI/UX
-    // req. & abstract & ...
-
-
-// Doc headline for later
