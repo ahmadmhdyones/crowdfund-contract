@@ -193,6 +193,11 @@ contract Campaign {
         return address(this).balance;
     }
 
+    function getContributionAmount() external view returns (uint256) {
+        address contributor = msg.sender;
+        return pledgeOf[contributor];
+    }
+
     function getRequestsCount() external view returns (uint256) {
         return requests.length;
     }
