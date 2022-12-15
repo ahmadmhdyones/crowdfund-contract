@@ -169,7 +169,6 @@ contract Campaign {
         request.completed = true;
     }
 
-
     function getSummary()
         external
         view
@@ -200,5 +199,13 @@ contract Campaign {
 
     function getRequests() external view returns (Request[] memory) {
         return requests;
+    }
+
+    function getRequestApproval(uint256 requestId) external view returns (bool) {
+        address approver = msg.sender;
+
+        bool result = approvals[approver][requestId];
+
+        return result;
     }
 }
