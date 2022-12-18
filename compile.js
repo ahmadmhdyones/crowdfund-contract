@@ -7,8 +7,8 @@ const buildPath = path.resolve(__dirname, 'build');
 fs.removeSync(buildPath);
 
 try {
-  const campaignPath = path.resolve(__dirname, 'contracts', 'Campaign.sol');
-  const source = fs.readFileSync(campaignPath, 'utf8');
+  const contractPath = path.resolve(__dirname, 'contracts', 'Campaign.sol');
+  const source = fs.readFileSync(contractPath, 'utf8');
   const input = {
     language: 'Solidity',
     sources: {
@@ -34,5 +34,5 @@ try {
 
   console.log('✅ Contracts compiled successfully'.green.inverse);
 } catch (err) {
-  console.error(err.message.red.inverse);
+  console.error(`🛑 ${err.message}`.red.inverse, err);
 }

@@ -20,12 +20,15 @@
   "main": "index.js",
   "scripts": {
     "build": "node compile.js",
-    "deploy": "node deploy.js",
+    "prod": "node deploy.js",
     "test": "mocha",
     "lint": "prettier --write 'contracts/**/*.sol' & solhint 'contracts/**/*.sol'"
   },
   "dependencies": {
-    "solc": "0.8.15"
+    "@truffle/hdwallet-provider": "^2.1.1",
+    "dotenv": "^16.0.3",
+    "solc": "0.8.15",
+    "web3": "^1.8.1"
   },
   "devDependencies": {
     "colors": "^1.4.0",
