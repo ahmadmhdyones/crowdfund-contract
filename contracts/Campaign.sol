@@ -14,7 +14,7 @@ contract CampaignFactory {
         return address(newCampaign);
     }
 
-    function getDeployedCampaign() external view returns (Campaign[] memory) {
+    function getDeployedCampaigns() external view returns (Campaign[] memory) {
         return deployedCampaigns;
     }
 }
@@ -206,11 +206,17 @@ contract Campaign {
         return requests;
     }
 
-    function getRequestApproval(uint256 requestId) external view returns (bool) {
+    function getRequestApproval(uint256 requestId)
+        external
+        view
+        returns (bool)
+    {
         address approver = msg.sender;
-
         bool result = approvals[approver][requestId];
-
         return result;
+    }
+
+    function isOwner() external restricted view returns (bool) {
+        return true;
     }
 }
