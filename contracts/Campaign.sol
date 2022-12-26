@@ -49,7 +49,7 @@ contract Campaign {
     }
 
     modifier beforeed() {
-        require(block.timestamp <= (endAt * 24 * 3600) + block.timestamp, "Campaign has already ended");
+        require(block.timestamp <= endAt, "Campaign has already ended");
         _;
     }
 
