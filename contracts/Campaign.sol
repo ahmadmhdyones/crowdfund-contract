@@ -20,6 +20,15 @@ contract CampaignFactory {
 }
 
 contract Campaign {
+    struct Summary {
+        uint256 deadline;
+        uint256 minPledge;
+        uint256 balance;
+        uint256 countrequests;
+        uint256 countPledges;
+        address owner;
+    }
+
     struct Request {
         string description; // for what?
         uint256 amount; // how much?
@@ -49,7 +58,10 @@ contract Campaign {
     }
 
     modifier beforeed() {
-        require(block.timestamp <= endAt, "Campaign has already ended");
+        require(
+            block.timestamp <= (endAt * 24 * 3600) + block.timestamp,
+            "Campaign has already ended"
+        );
         _;
     }
 
@@ -172,21 +184,17 @@ contract Campaign {
     function getSummary()
         external
         view
-        returns (
-            uint256, // minPledge
-            uint256, // balance
-            uint256, // num of requests
-            uint256, // num of contributors
-            address // manager
-        )
+        returns (Summary memory)
     {
-        return (
-            minPledge,
-            address(this).balance,
-            requests.length,
-            countPledges,
-            manager
-        );
+        Summary memory summary = Summary({
+            deadline: endAt,
+            minPledge: minPledge,
+            balance: address(this).balance,
+            countrequests: requests.length,
+            countPledges: countPledges,
+            owner: manager
+        });
+        return summary;
     }
 
     function getBalance() external view returns (uint256) {
@@ -216,7 +224,7 @@ contract Campaign {
         return result;
     }
 
-    function isOwner() external restricted view returns (bool) {
+    function isOwner() external view restricted returns (bool) {
         return true;
     }
 }
