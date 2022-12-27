@@ -36,23 +36,23 @@ contract Campaign {
     struct Request {
         string description; // for what?
         uint256 amount; // how much?
-        address payable recipient; // for who (supplier)?
+        address payable recipient; // for who? (supplier)
         bool completed; // it is done?
         uint256 countApprovals; // number of approved votes
     }
 
-    address public manager; // owner
-    string public name; // owner's name
-    string public title; // title of the campaign
-    string public description; // details about campaign
-    string public image; // cover pic path
-    uint256 public goal; // target amount
-    uint256 public pledged; // raised amount
-    uint256 public startAt; // launch date
-    uint256 public endAt; // deadline
-    uint256 public minPledge; // minimum amount of contribution
+    address private manager; // owner
+    string private name; // owner's name
+    string private title; // title of the campaign
+    string private description; // details about campaign
+    string private image; // cover pic path
+    uint256 private goal; // target amount
+    uint256 private pledged; // raised amount
+    uint256 private startAt; // launch date
+    uint256 private endAt; // deadline
+    uint256 private minPledge; // minimum amount of contribution
     Request[] public requests; // requests of needs
-    uint256 public countPledges; // number of contributors
+    uint256 private countPledges; // number of contributors
     mapping(address => uint256) public pledgeOf; // contributors
     mapping(address => mapping(uint256 => bool)) public approvals; // requests voters
     bool public canceled; // it is paused?
@@ -64,8 +64,10 @@ contract Campaign {
         string description;
         string image;
         uint256 goal;
+        uint256 pledged;
         uint256 balance;
-        uint256 deadline;
+        uint256 endAt;
+        uint256 startAt;
         uint256 minPledge;
         uint256 countrequests;
         uint256 countPledges;
@@ -216,8 +218,10 @@ contract Campaign {
             description: description,
             image: image,
             goal: goal,
+            pledged: pledged,
             balance: address(this).balance,
-            deadline: endAt,
+            startAt: startAt,
+            endAt: endAt,
             minPledge: minPledge,
             countrequests: requests.length,
             countPledges: countPledges
