@@ -256,7 +256,10 @@ contract Campaign {
         return result;
     }
 
-    function isOwner() external view restricted returns (bool) {
-        return true;
+    function isOwner() external view returns (bool) {
+        if (msg.sender == manager)
+            return true;
+        else
+            return false;
     }
 }
