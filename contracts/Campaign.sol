@@ -1,15 +1,28 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.15.0;
+pragma solidity ^0.8.9.0;
 
 contract CampaignFactory {
-    Campaign[] public deployedCampaigns;
+    Campaign[] public deployedCampaigns; // created campaigns
 
     function createCampaign(
+        string memory _name,
+        string memory _title,
+        string memory _description,
+        string memory _image,
         uint256 _goal,
         uint256 _end,
         uint256 _minimum
     ) public returns (address) {
-        Campaign newCampaign = new Campaign(_goal, _end, _minimum, msg.sender);
+        Campaign newCampaign = new Campaign(
+            _name,
+            _title,
+            _description,
+            _image,
+            _goal,
+            _end,
+            _minimum,
+            msg.sender
+        );
         deployedCampaigns.push(newCampaign);
         return address(newCampaign);
     }
@@ -20,15 +33,6 @@ contract CampaignFactory {
 }
 
 contract Campaign {
-    struct Summary {
-        uint256 deadline;
-        uint256 minPledge;
-        uint256 balance;
-        uint256 countrequests;
-        uint256 countPledges;
-        address owner;
-    }
-
     struct Request {
         string description; // for what?
         uint256 amount; // how much?
@@ -38,6 +42,10 @@ contract Campaign {
     }
 
     address public manager; // owner
+    string public name; // owner's name
+    string public title; // title of the campaign
+    string public description; // details about campaign
+    string public image; // cover pic path
     uint256 public goal; // target amount
     uint256 public pledged; // raised amount
     uint256 public startAt; // launch date
@@ -49,6 +57,16 @@ contract Campaign {
     mapping(address => mapping(uint256 => bool)) public approvals; // requests voters
     bool public canceled; // it is paused?
 
+    struct Summary {
+        uint256 minPledge;
+        uint256 goal;
+        uint256 deadline;
+        uint256 balance;
+        uint256 countrequests;
+        uint256 countPledges;
+        address owner;
+    }
+
     modifier restricted() {
         require(
             msg.sender == manager,
@@ -58,10 +76,7 @@ contract Campaign {
     }
 
     modifier beforeed() {
-        require(
-            block.timestamp <= (endAt * 24 * 3600) + block.timestamp,
-            "Campaign has already ended"
-        );
+        require(block.timestamp <= endAt, "Campaign has already ended");
         _;
     }
 
@@ -92,6 +107,10 @@ contract Campaign {
     }
 
     constructor(
+        string memory _name,
+        string memory _title,
+        string memory _description,
+        string memory _image,
         uint256 _goal,
         uint256 _end,
         uint256 _minimum,
@@ -100,6 +119,10 @@ contract Campaign {
         require(_end > block.timestamp, "End time is less than current time");
 
         manager = _owner;
+        name = _name;
+        title = _title;
+        description = _description;
+        image = _image;
         goal = _goal;
         pledged = 0;
         startAt = block.timestamp;
@@ -181,14 +204,11 @@ contract Campaign {
         request.completed = true;
     }
 
-    function getSummary()
-        external
-        view
-        returns (Summary memory)
-    {
+    function getSummary() external view returns (Summary memory) {
         Summary memory summary = Summary({
-            deadline: endAt,
             minPledge: minPledge,
+            goal: goal,
+            deadline: endAt,
             balance: address(this).balance,
             countrequests: requests.length,
             countPledges: countPledges,
