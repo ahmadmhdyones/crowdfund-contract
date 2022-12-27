@@ -95,14 +95,14 @@ contract Campaign {
     }
 
     modifier succeeded() {
-        require(pledged >= goal, "Campaign has succeeded");
+        require(pledged >= goal, "Campaign has not succeeded");
         _;
     }
 
     modifier notsucceeded() {
         require(
             pledged < goal,
-            "You cannot withdraw, Campaign has not succeeded"
+            "You cannot, Campaign has succeeded"
         );
         _;
     }
