@@ -58,7 +58,7 @@ contract Campaign {
     bool public canceled; // it is paused?
 
     struct Summary {
-        address owner;
+        address manager;
         string name;
         string title;
         string description;
@@ -212,7 +212,7 @@ contract Campaign {
 
     function getSummary() external view returns (Summary memory) {
         Summary memory summary = Summary({
-            owner: manager,
+            manager: manager,
             name: name,
             title: title,
             description: description,
