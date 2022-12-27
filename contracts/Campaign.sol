@@ -134,9 +134,14 @@ contract Campaign {
         startAt = block.timestamp;
         endAt = _end;
         minPledge = _minimum;
+        canceled = false;
     }
 
     function cancel() external restricted activated notsucceeded {
+        require(
+            pledged == address(this).balance,
+            "Campaign has used pledged money"
+        );
         canceled = true;
     }
 
@@ -153,7 +158,7 @@ contract Campaign {
         pledgeOf[msg.sender] += msg.value;
     }
 
-    function refund() external payable beforeed contributed notsucceeded {
+    function refund() external payable contributed notsucceeded {
         uint256 bal = pledgeOf[msg.sender];
         address payable user = payable(msg.sender);
         user.transfer(bal);
@@ -257,9 +262,7 @@ contract Campaign {
     }
 
     function isOwner() external view returns (bool) {
-        if (msg.sender == manager)
-            return true;
-        else
-            return false;
+        if (msg.sender == manager) return true;
+        else return false;
     }
 }
