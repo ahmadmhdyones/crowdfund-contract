@@ -58,13 +58,17 @@ contract Campaign {
     bool public canceled; // it is paused?
 
     struct Summary {
-        uint256 minPledge;
+        address owner;
+        string name;
+        string title;
+        string description;
+        string image;
         uint256 goal;
-        uint256 deadline;
         uint256 balance;
+        uint256 deadline;
+        uint256 minPledge;
         uint256 countrequests;
         uint256 countPledges;
-        address owner;
     }
 
     modifier restricted() {
@@ -206,13 +210,17 @@ contract Campaign {
 
     function getSummary() external view returns (Summary memory) {
         Summary memory summary = Summary({
-            minPledge: minPledge,
+            owner: manager,
+            name: name,
+            title: title,
+            description: description,
+            image: image,
             goal: goal,
-            deadline: endAt,
             balance: address(this).balance,
+            deadline: endAt,
+            minPledge: minPledge,
             countrequests: requests.length,
-            countPledges: countPledges,
-            owner: manager
+            countPledges: countPledges
         });
         return summary;
     }
