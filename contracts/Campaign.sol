@@ -261,8 +261,8 @@ contract Campaign {
         return result;
     }
 
-    function isOwner() external view returns (bool) {
-        if (msg.sender == manager) return true;
+    function isOwner(address addr) external view returns (bool) {
+        if (addr == manager) return true;
         else return false;
     }
 }
